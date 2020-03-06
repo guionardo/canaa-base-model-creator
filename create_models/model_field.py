@@ -18,17 +18,23 @@ class ModelField:
     def __init__(self, line: str):
         '''
         Obtém um campo da model
-        campo_promax;tipo_promax;campo_ms;tipo_ms
+        campo_promax;tipo_promax;campo_ms;tipo_ms;extra_info
         utiliza_robin_hood;boolean;uses_robin_hood
         ind_est_vendas;DescricaoModel;sales_state;DescriptionModel
         '''
 
-        w = get_words(line, 5)
+        (self._field_promax,
+         self._type_promax,
+         self._field_ms,
+         self._type_ms,
+         extra) = get_words(line, 5)
 
-        self._field_promax, self._type_promax, self._field_ms, self._type_ms = w[:4]
         self._type_promax = self._validate_type(self._type_promax)
         self._type_ms = self._validate_type(self._type_ms)
-        self._required = bool(w[4])
+        if not self._type_ms:
+            self._type_ms = self._type_promax
+        self._required = extra and extra.lower() == 'required'
+        self._pk = extra and extra.lower() == 'pk'
 
     @property
     def field_promax(self):
@@ -49,6 +55,10 @@ class ModelField:
     @property
     def required(self):
         return self._required
+
+    @property
+    def pk(self):
+        return self._pk
 
     @property
     def ok(self):

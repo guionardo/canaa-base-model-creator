@@ -7,8 +7,5 @@ class TestCreator(unittest.TestCase):
 
     def test_create_promax(self):
 
-        mc = ModelCreator("parametros-0200.csv")
-        bm = mc.create_promax_model()
-        promax_file = mc.promax_model_file_name+".py"
-        with open(promax_file, 'w') as f:
-            f.write(bm)
+        mc = ModelCreator("docs/parametros-0200.csv")
+        mc.create_files('.')
