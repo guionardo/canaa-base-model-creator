@@ -1,5 +1,7 @@
 # MODEL CREATOR
 
+[![codecov](https://codecov.io/gh/guionardo/canaa-base-model-creator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guionardo/canaa-base-model-creator)
+
 ## CSV LAYOUT
 
 Save file in UTF-8 encoding
