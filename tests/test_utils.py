@@ -1,6 +1,6 @@
 import unittest
 
-from create_models.utils import camel_to_snake, snake_to_camel, get_words
+from src.create_models.utils import camel_to_snake, snake_to_camel, get_words
 
 
 class TestUtils(unittest.TestCase):

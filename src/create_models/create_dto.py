@@ -1,8 +1,9 @@
-from datetime import datetime
 from collections import defaultdict
-from create_models.model_creator import ModelCreator
-from create_models.model_field import ModelField
-from create_models.utils import snake_to_camel, camel_to_snake
+from datetime import datetime
+
+from .model_creator import ModelCreator
+from .model_field import ModelField
+from .utils import snake_to_camel
 
 
 def create_dto(model: ModelCreator):

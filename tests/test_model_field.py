@@ -1,6 +1,6 @@
 import unittest
 
-from create_models.model_field import ModelField
+from src.create_models.model_field import ModelField
 
 
 class TestModelField(unittest.TestCase):

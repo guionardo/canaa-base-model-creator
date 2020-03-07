@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from create_models.model_creator import ModelCreator
-from create_models.model_field import ModelField
-from create_models.utils import snake_to_camel
+from .model_creator import ModelCreator
+from .model_field import ModelField
+from .utils import snake_to_camel
 
 
 def create_ms_model(model: ModelCreator):
@@ -16,7 +16,6 @@ def create_ms_model(model: ModelCreator):
         '\t\tself.integration_fields: dict = {}'
     ]
 
-    
     for _import in model.imports():
         linhas.insert(0, _import)
 
