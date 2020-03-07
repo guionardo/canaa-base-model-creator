@@ -1,0 +1,11 @@
+{
+  "model": {
+    "promax": "promax_namespace.modelo_teste",
+    "ms": "microservice_namespace.model_test"
+  },
+  "fields": [
+    "promax_field_name":{
+
+    }
+  ]
+}

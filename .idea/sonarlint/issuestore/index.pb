@@ -1,0 +1,29 @@
+
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+8
+setup.py,8/e/8e2edce0d507e1297474f25c00cae94258db38d8
+E
+tests/test_creator.py,4/6/46c194156b11f72c1be36d2a354c8df47daffb76
+>
+canaa-model.py,5/b/5bc455499734e3e9432b4e2ea40c17a6ef607f9b
+K
+create_models/create_dto.py,c/8/c8530c8fbc4948f04fc906c4d674e2758532239d
+T
+$create_models/create_promax_model.py,1/3/13118081ca4b504390a557a7594f38131e991da3
+?
+docs/model.yaml,b/1/b1c8c3fe7d27a2891b44a4ba37b92bc255cfb562
+?
+docs/model.json,f/4/f47c52a9b445e45a6009a7d3880e32a2814cbf78
+F
+create_models/utils.py,9/0/903c6dce166ff7e91482b0b121e0cb0a21d4b48e
+O
+create_models/model_metadata.py,c/4/c4eefa5684075903a86d2163d010afc115894ccf
+H
+tests/test_model_info.py,3/f/3fc2cebb3d1361a789f2f9f3a2d429628a1ad59a
+K
+create_models/model_info.py,a/5/a5d53e1957b74209e2901c42fffe573bf2209d25
+H
+docs/parametros-0200.csv,f/6/f6b8556e767286a11bad7a017a065021b3749432
+N
+create_models/model_creator.py,e/1/e162121f82cbb1f3c19112a5f37a69bc62f8a54d
