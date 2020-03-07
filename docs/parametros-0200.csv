@@ -1,7 +1,7 @@
-parametros_0200;parameters_0200;parametros;parameters
+parametros.parametros_0200;parameters.parameters_0200
 teste_date;date;date_testing
-codigo_empresa;" number";company_id;
-codigo_filial;" number";branch_id;
+codigo_empresa;" number";company_id;int;pk
+codigo_filial;" number";branch_id;int;pk
 utiliza_robin_hood;boolean;uses_robin_hood;
 permanencias;Permanencias;permanences;Permanences
 operacao_baixa_vale;" number";advance_discharge_operation;

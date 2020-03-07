@@ -3,7 +3,7 @@ def camel_to_snake(text: str):
     abriu_ = False
     for letra in text:
         if letra.isupper() and len(letras) > 0 and not abriu_:
-            letras.append('_'+letra.lower())
+            letras.append('_' + letra.lower())
             abriu_ = True
         else:
             letras.append(letra.lower())
@@ -18,17 +18,19 @@ def snake_to_camel(text: str):
     for letra in text:
         if not letra.isalpha():
             pegou_under = True
-        else:
-            if pegou_under:
-                letra = letra.upper()
-                pegou_under = False
-            letras.append(letra)
+            if letra=='_':
+                continue
+        
+        if pegou_under:
+            letra = letra.upper()
+            pegou_under = False
+        letras.append(letra)
 
     return "".join(letras)
 
 
-def get_words(line: str, nwords: int = 0):
-    words = [word.replace('"', '').strip() for word in line.split(';')]
+def get_words(line: str, nwords: int = 0, sep: str = ';'):
+    words = [word.replace('"', '').strip() for word in line.split(sep)]
     if nwords > 0:
         while len(words) < nwords:
             words.append(None)
