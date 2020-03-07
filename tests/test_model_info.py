@@ -1,6 +1,6 @@
 import unittest
 
-from create_models.model_info import ModelInfo
+from src.create_models.model_info import ModelInfo
 
 
 class TestModelInfo(unittest.TestCase):

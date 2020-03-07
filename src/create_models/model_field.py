@@ -1,4 +1,4 @@
-from create_models.utils import get_words
+from .utils import get_words
 
 
 class ModelField:

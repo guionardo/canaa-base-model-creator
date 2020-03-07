@@ -1,9 +1,9 @@
 import os
 
-from create_models.create_dto import create_dto
-from create_models.create_ms_model import create_ms_model
-from create_models.create_promax_model import create_promax_model
-from create_models.model_creator import ModelCreator
+from .create_dto import create_dto
+from .create_ms_model import create_ms_model
+from .create_promax_model import create_promax_model
+from .model_creator import ModelCreator
 
 
 def create_files(model: ModelCreator, destiny_folder: str):
