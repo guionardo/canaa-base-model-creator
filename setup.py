@@ -25,10 +25,11 @@ long_description = read('README.md')
 packages = find_packages(where='create_models')
 
 setup(
-    name='canaa-base-model-creator',
+    name='canaa-model-furlan',
     version=get_version(os.path.join('create_models', 'main.py')),
     description="Canaa Base model creator",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     license='MIT',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
