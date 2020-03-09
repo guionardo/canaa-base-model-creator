@@ -1,9 +1,0 @@
-# Example model
----
-model:
-  promax: promax_namespace.modelo_teste
-  ms: microservice_namespace.model_test
-
-fields:
-  - [promax_name, promax_type, ms_name, ms_type, extra]
-  - [campo_str, string, str_field, string,]
