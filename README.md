@@ -1,5 +1,9 @@
 # Canaã Model Creator
 
+[![codecov](https://codecov.io/gh/guionardo/canaa-base-model-creator/branch/develop/graph/badge.svg)](https://codecov.io/gh/guionardo/canaa-base-model-creator)
+
+[![codecov](https://codecov.io/gh/guionardo/canaa-base-model-creator/branch/develop/graphs/commits.svg)]
+
 ## CSV LAYOUT
 
 The file must be an CSV (separated by ; fields), UTF-8 without BOM encoding
