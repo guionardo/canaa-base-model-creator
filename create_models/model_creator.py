@@ -2,8 +2,6 @@ import os
 from collections import defaultdict
 from datetime import datetime
 
-import yaml
-
 from .logging import get_logger
 from .model_field import ModelField
 from .model_info import ModelInfo
@@ -30,8 +28,7 @@ class ModelCreator:
             self.log.info('ModelCreator: %s', file_name)
             if ext == '.csv':
                 self._ok = self.load_from_csv(file_name)
-            elif ext == '.yaml' or ext == '.yml':
-                self._ok = self.load_from_yaml(file_name)
+           
         else:
             raise ValueError('Invalid file type: {0}'.format(file_name))
 
@@ -81,18 +78,10 @@ class ModelCreator:
 
         return True
 
-    def load_from_yaml(self, file_name):
-        with open(file_name) as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-            self.info = ModelInfo(data)
-            if "fields" in data:
-                for field_data in data['fields']:
-                    if not self._add_field(field_data):
-                        return False
-
-        return True
-
     def _add_field(self, field_data, line_no: int = 0):
+        if isinstance(field_data,str) and not field_data:
+            return True
+
         try:
             field = ModelField(field_data)
         except Exception as exc:

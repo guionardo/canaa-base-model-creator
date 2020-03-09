@@ -20,21 +20,22 @@ def create_promax_model(model: ModelCreator):
     has_datetime, has_time, has_date = False, False, False
     field: ModelField = None
     for field in model.fields:
-
         com = "\n\t\t# " + field.field_ms
         linhas.append(com)
-        if field.primitive_type:
-            campo = "\t\tself.{0}: {1} = \\\n\t\t\tself.get_value('{0}',field_type={1})".format(
+        if field.primitive_type:            
+            campo = "\t\tself.{0}: {1} = \\\n\t\t\tself.get_value('{0}', field_type={1}, required={2})".format(
                 field.field_promax,
-                field.type_promax
+                field.type_promax,
+                field.required
             )
             for datetime_type in ['datetime', 'time', 'date']:
                 if datetime_type in [field.type_promax, field.type_ms]:
                     _imports.add('datetime', datetime_type)
         else:
-            campo = "\t\tself.{0}: {1} = \\\n\t\t\t{1}(\n\t\t\t\tself.get_value('{0}',field_type=dict)).to_dict()".format(
+            campo = "\t\tself.{0}: {1} = \\\n\t\t\t{1}(\n\t\t\t\tself.get_value('{0}', field_type=dict, required={2})).to_dict()".format(
                 field.field_promax,
-                field.type_promax
+                field.type_promax,
+                field.required
             )
             _imports.add('domain.models.promax.{0}.{1}'.format(
                 model.info.namespace_promax,

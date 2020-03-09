@@ -58,9 +58,7 @@ setup(
             "canaa-model=create_models.main:main"
         ]
     },
-    install_requires=[
-        'pyyaml'
-    ],
+    install_requires=[],
     zip_safe=False,
     python_requires='>=3.6.*'
 )

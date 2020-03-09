@@ -63,6 +63,13 @@ class ModelField:
             raise ModelFieldException(
                 "Missing {0} : {1}".format(missing_fields, line.strip()))
 
+        if not isinstance(self._pk,bool):
+            self._pk = False
+            
+        if not isinstance(self._required,bool):
+            self._required=False or self._pk
+
+
     def __str__(self):
         for index, value in enumerate([self.field_promax, self.type_promax, self.field_ms, self.type_ms, self.extra, self.default_value]):
             self._COL_W[index] = max(
