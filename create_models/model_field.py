@@ -1,10 +1,10 @@
-from .utils import get_words
+from .utils import get_words, padr
 
 
 class ModelField:
 
     TYPES = {
-        "int":"int",
+        "int": "int",
         "number": "int",
         "float": "float",
         "string": "str",
@@ -27,6 +27,8 @@ class ModelField:
         "datetime": "None",
         "time": "None"
     }
+
+    _COL_W = [0, 25, 10, 25, 10, 10]
 
     def __init__(self, line: str):
         '''
@@ -55,6 +57,27 @@ class ModelField:
         if not self._type_ms:
             self._type_ms = self._type_promax
 
+        if not self.ok:
+            missing_fields = [field_name for field_name in [
+                'field_promax', 'type_promax', 'field_ms'] if not getattr(self, field_name, None)]
+            raise ModelFieldException(
+                "Missing {0} : {1}".format(missing_fields, line.strip()))
+
+    def __str__(self):
+        for index, value in enumerate([self.field_promax, self.type_promax, self.field_ms, self.type_ms, self.extra, self.default_value]):
+            self._COL_W[index] = max(
+                self._COL_W[index], len(value))
+
+        return " - ".join([
+            "OK" if self.ok else "!!",
+            padr(self.field_promax, self._COL_W[0])+":"+padr(
+                self.type_promax, self._COL_W[1]),
+            padr(self.field_ms, self._COL_W[2]) +
+            ":"+padr(self.type_ms, self._COL_W[3]),
+            padr(self.extra, self._COL_W[4]),
+            padr(self.default_value, self._COL_W[5])
+        ])
+
     def load_from_str(self, line):
         (self._field_promax,
          self._type_promax,
@@ -65,7 +88,7 @@ class ModelField:
         self._pk = extra and extra.lower() == 'pk'
 
     def load_from_dict(self, data):
-        pass
+        raise NotImplementedError()
 
     def load_from_list(self, data):
         if len(data) == 5:
@@ -134,3 +157,7 @@ class ModelField:
             tp = cls.TYPES[tp.lower()]
 
         return tp
+
+
+class ModelFieldException(Exception):
+    pass

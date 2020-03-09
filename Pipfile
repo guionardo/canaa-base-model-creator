@@ -7,9 +7,14 @@ verify_ssl = true
 autopep8 = "*"
 flake8 = "*"
 coverage = "*"
+setuptools = "*"
+pipx = "*"
+rope = "*"
 
 [packages]
 pyyaml = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.6"

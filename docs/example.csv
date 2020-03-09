@@ -1,0 +1,8 @@
+promax_namespace.promax_exemplo;microservice_namespace.microservice_example
+codigo_modelo;int;model_id;int;pk
+nome_pessoa;string;person_name;string;required
+data_nascimento;date;birth_date;date;
+ativo;bool;active;bool;
+cadastro;datetime;register;datetime
+taxa;float;rate;float
+descricao;DescricaoModel;description;DescriptionModel

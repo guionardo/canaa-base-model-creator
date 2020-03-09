@@ -1,4 +1,5 @@
-from .utils import get_words
+from .logging import get_logger
+from .utils import get_words, snake_to_camel
 
 
 class ModelInfo:
@@ -14,13 +15,15 @@ class ModelInfo:
         self._ms_model = None
         self._namespace_promax = None
         self._namespace_ms = None
+        self.log = get_logger()
 
         if isinstance(line, str):
             self.load_from_str(line)
         elif isinstance(line, dict):
             self.load_from_dict(line)
-            
+
         self.validate_data()
+        self.log.info('ModelInfo: {0}'.format(str(self)))
 
     def validate_data(self):
         if self._promax_model and self._namespace_promax and self._ms_model and self._namespace_ms:
@@ -64,7 +67,13 @@ class ModelInfo:
         return self._namespace_ms
 
     def __str__(self):
-        return str({"modelinfo": {
-            "promax": self.namespace_promax+'.'+self.promax_model,
-            "microservice": self.namespace_ms+"."+self.ms_model
-        }})
+        return "PROMAX={0}.{1}.{2} MODEL={3}.{4}.{5} DTO={3}.{6}.{7}".format(
+            self.namespace_promax,
+            self.promax_model,
+            snake_to_camel(self.promax_model),
+            self.namespace_ms,
+            self.ms_model,
+            snake_to_camel(self.ms_model),
+            self.ms_model+"_dto",
+            snake_to_camel(self.ms_model)+"DTO"
+        )

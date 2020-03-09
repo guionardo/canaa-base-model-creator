@@ -1,5 +1,9 @@
+.idea
 .sonarlint
 .vscode
 __pycache__
 *.py[co]
 domain
+build
+*.egg-info
+dist
