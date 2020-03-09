@@ -1,0 +1,3 @@
+promax_namespace.descricao;microservice_namespace.description
+chave;int;key;int;pk
+valor;string;value;string

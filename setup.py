@@ -13,7 +13,7 @@ def read(rel_path):
 
 def get_version(rel_path):
     for line in read(rel_path).splitlines():
-        if line.startswith('__version__'):            
+        if line.startswith('__version__'):
             delim = '"' if '"' in line else "'"
             return line.split(delim)[1]
     else:
@@ -22,9 +22,11 @@ def get_version(rel_path):
 
 long_description = read('README.md')
 
+packages = find_packages(where='create_models')
+
 setup(
     name='canaa-base-model-creator',
-    version=get_version("src/create_models/__init__.py"),
+    version=get_version(os.path.join('create_models', 'main.py')),
     description="Canaa Base model creator",
     long_description=long_description,
     license='MIT',
@@ -44,20 +46,19 @@ setup(
         "Documentation": "https://pip.pypa.io",
         "Source": "https://github.com/guionardo/canaa-base-model-creator",
     },
-    author='The pip developers',
-    author_email='pypa-dev@groups.google.com',
-
-    package_dir={"": "src"},
+    author='Guionardo Furlan',
+    author_email='guionardo@gmail.com',
     packages=find_packages(
-        where="src",
-        exclude=["contrib", "docs", "tests*", "tasks"],
+        where=".",
+        exclude=["tests"],
     ),
     entry_points={
         "console_scripts": [
-            "canaa-model=canaa-base-model-creator._internal.cli.main:main"
-        ],
+            "canaa-model=create_models.main:main"
+        ]
     },
 
+
     zip_safe=False,
-    python_requires='>=3.6.*',
+    python_requires='>=3.6.*'
 )

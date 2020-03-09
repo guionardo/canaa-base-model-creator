@@ -3,5 +3,6 @@
 
 omit =
     */__init__.py
-    */tests/*
-    ./manage.py
+    */tests/*    
+    setup.py
+    main.py

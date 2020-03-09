@@ -3,18 +3,19 @@ from datetime import datetime
 
 from .model_creator import ModelCreator
 from .model_field import ModelField
-from .utils import snake_to_camel
+from .utils import snake_to_camel, created_by
+from .imports import Imports
 
 
 def create_dto(model: ModelCreator):
     linhas = [
-        "from canaa_base import BaseModel",
-        "",
-        "",
         'class {0}DTO({0}Model):\n'.format(
             snake_to_camel(model.info.ms_model)), '\tdef __init__(self, arg: {0}Model):'.format(
             snake_to_camel(model.info.promax_model)), '\t\tsuper().__init__()'
     ]
+
+    _imports = Imports()
+    _imports.add('canaa_base', 'BaseModel')
 
     field: ModelField = None
     if len(model.pks) > 0:
@@ -42,32 +43,21 @@ def create_dto(model: ModelCreator):
                 class_name,
                 field.field_promax
             ))
-            _imp["domain.models.microservice.{0}.{1}".format(
+            _imports.add("domain.models.dtos.{0}.{1}".format(
                 model.info.namespace_ms,
                 field.field_ms+'_dto'
-            )].add(class_name)
+            ), class_name)
 
-    _imp = dict(_imp)
-    if len(_imp) > 0:
-        _imp = [
-            "from {0} import {1}".format(
-                mod, ", ".join(_imp[mod]))
-            for mod in _imp
-        ]
-        for imp in _imp:
-            linhas.insert(0, imp)
-
-    linhas.insert(0, 'from domain.models.microservice.{0}.{1} import {2}'.format(
+    _imports.add('domain.models.microservice.{0}.{1}'.format(
         model.info.namespace_ms,
-        model.info.ms_model,
-        snake_to_camel(model.info.ms_model)
-    ))
-    linhas.insert(0, 'from domain.models.promax.{0}.{1} import {2}'.format(
+        model.info.ms_model+'_model'
+    ), snake_to_camel(model.info.ms_model)+'Model')
+    _imports.add('domain.models.promax.{0}.{1}'.format(
         model.info.namespace_promax,
-        model.info.promax_model,
-        snake_to_camel(model.info.promax_model)
-    ))
+        model.info.promax_model+'_model'
+    ), snake_to_camel(model.info.promax_model)+'Model')
 
-    linhas.append('\n\n# CREATED BY MODEL_CREATOR IN ' +
-                  str(datetime.now()) + "\n")
+    linhas.insert(0, _imports.to_code())
+    linhas.insert(0, created_by() + "\n")
+
     return "\n".join(linhas)

@@ -8,6 +8,8 @@ autopep8 = "*"
 flake8 = "*"
 coverage = "*"
 setuptools = "*"
+pipx = "*"
+rope = "*"
 
 [packages]
 pyyaml = "*"
