@@ -7,7 +7,7 @@ from create_models.logging import get_logger
 from create_models.model_creator import ModelCreator
 
 __description__ = 'Canaa model creator'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 _usage = """
 
