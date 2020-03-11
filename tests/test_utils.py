@@ -30,6 +30,7 @@ class TestUtils(unittest.TestCase):
 
     def test_padr(self):        
         self.assertEqual(padr('abc',10),'abc       ')
+        self.assertEqual(padr('abc',0),'abc')
 
     def test_created_by(self):
         cb = created_by()

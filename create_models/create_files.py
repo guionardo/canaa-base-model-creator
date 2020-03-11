@@ -9,7 +9,7 @@ from .model_creator import ModelCreator
 log = get_logger()
 
 
-def create_files(model: ModelCreator, destiny_folder: str):
+def create_files(model: ModelCreator, destiny_folder: str, **kwargs):
 
     log.info('Creating model files for {0}'.format(model))
 
@@ -33,7 +33,7 @@ def create_files(model: ModelCreator, destiny_folder: str):
     dto_folder = os.path.join(
         destiny_folder, 'domain', 'models', 'dtos', namespace_ms)
     dto_file = os.path.join(dto_folder, model.dto_file_name)
-
+    old_canaa_base = 'old_canaa_base' in kwargs and kwargs['old_canaa_base']
     try:
         folders = []
         for folder in [promax_model_folder, ms_model_folder, dto_folder]:
@@ -50,10 +50,10 @@ def create_files(model: ModelCreator, destiny_folder: str):
         log.error("Folder error: %s", str(exc))
         return False
 
-    return process_files(model, promax_file, ms_file, dto_file)
+    return process_files(model, promax_file, ms_file, dto_file ,old_canaa_base)
 
 
-def process_files(model, promax_file, ms_file, dto_file):
+def process_files(model, promax_file, ms_file, dto_file,old_canaa_base):
     processes = {
         "PROMAX": {
             "file": promax_file,
@@ -73,7 +73,7 @@ def process_files(model, promax_file, ms_file, dto_file):
             filename = processes[process]['file']
             method = processes[process]['method']
 
-            content = method(model)
+            content = method(model,old_canaa_base)
             if os.path.isfile(filename):
                 os.remove(filename)
 

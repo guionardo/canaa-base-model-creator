@@ -1,5 +1,7 @@
-from datetime import datetime
 import getpass
+from datetime import datetime
+
+from create_models import __version__
 
 
 def camel_to_snake(text: str):
@@ -56,7 +58,8 @@ def padr(string: str, size: int):
 
 
 def created_by():
-    return "# CREATED BY CANAA-BASE-MODEL-CREATOR IN {0} : {1}".format(
+    return "# CREATED BY CANAA-BASE-MODEL-CREATOR v{0} IN {1} : {2}".format(
+        __version__,
         datetime.now(),
         getpass.getuser()
     )

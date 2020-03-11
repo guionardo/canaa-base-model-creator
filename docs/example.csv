@@ -5,4 +5,4 @@ data_nascimento;date;birth_date;date;
 ativo;bool;active;bool;
 cadastro;datetime;register;datetime
 taxa;float;rate;float
-descricao;DescricaoModel;description;DescriptionModel
+descricao;Descricao;description;Description

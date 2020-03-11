@@ -7,7 +7,7 @@ from .utils import snake_to_camel, created_by
 from .imports import Imports
 
 
-def create_dto(model: ModelCreator):
+def create_dto(model: ModelCreator,old_canaa_base:bool):
     linhas = [
         'class {0}DTO({0}Model):\n'.format(
             snake_to_camel(model.info.ms_model)), '\tdef __init__(self, arg: {0}Model):'.format(

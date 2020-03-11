@@ -26,9 +26,13 @@ class ModelInfo:
         self.log.info('ModelInfo: {0}'.format(str(self)))
 
     def validate_data(self):
-        if self._promax_model and self._namespace_promax and self._ms_model and self._namespace_ms:
-            return True
-        raise ValueError("ModelInfo init error (invalid argument)")
+        fault_fields = [field for field in ['promax_model', 'namespace_promax',
+                                            'ms_model', 'namespace_ms'] if not getattr(self, '_'+field, None)]
+        if len(fault_fields) > 0:
+            raise ValueError(
+                "ModelInfo init error - missing argument: {0}".format(fault_fields))
+
+        return True
 
     def load_from_str(self, line) -> (str, str):
         promax, ms = get_words(line, 2, ';')

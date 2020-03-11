@@ -6,7 +6,7 @@ from .model_field import ModelField
 from .utils import camel_to_snake, created_by, snake_to_camel
 
 
-def create_ms_model(model: ModelCreator):
+def create_ms_model(model: ModelCreator,old_canaa_base:bool):
     linhas = [
         'class {0}Model(BaseModel):\n'.format(
             snake_to_camel(model.info.ms_model)),
