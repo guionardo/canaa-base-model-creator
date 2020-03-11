@@ -39,7 +39,7 @@ def create_promax_model(model: ModelCreator, old_canaa_base: bool):
             )
             _imports.add('domain.models.promax.{0}.{1}'.format(
                 model.info.namespace_promax,
-                field.type_promax),
+                field.type_promax+"_model"),
                 snake_to_camel(field.type_promax)+"Model")
 
         linhas.append(campo)

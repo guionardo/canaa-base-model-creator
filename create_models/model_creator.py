@@ -28,7 +28,7 @@ class ModelCreator:
             self.log.info('ModelCreator: %s', file_name)
             if ext == '.csv':
                 self._ok = self.load_from_csv(file_name)
-           
+
         else:
             raise ValueError('Invalid file type: {0}'.format(file_name))
 
@@ -68,6 +68,9 @@ class ModelCreator:
         with open(file_name, 'r', encoding='utf-8') as f:
             line_no = 0
             for linha in f.readlines():
+                linha = linha.strip()
+                if linha.startswith('#'):
+                    continue
                 line_no += 1
                 if not has_head:
                     self.info = ModelInfo(linha)
@@ -79,7 +82,7 @@ class ModelCreator:
         return True
 
     def _add_field(self, field_data, line_no: int = 0):
-        if isinstance(field_data,str) and not field_data:
+        if isinstance(field_data, str) and not field_data:
             return True
 
         try:

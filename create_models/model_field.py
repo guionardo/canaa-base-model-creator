@@ -127,7 +127,11 @@ class ModelField:
 
     @property
     def ok(self):
-        return self._field_promax and self._type_promax and self.field_ms
+        return self._field_promax and \
+            self._type_promax and \
+            self.field_ms and \
+            self.is_valid_field_name(self._field_promax) and \
+            self.is_valid_field_name(self._field_ms)
 
     @property
     def primitive_type(self):
@@ -150,6 +154,18 @@ class ModelField:
             tp = cls.TYPES[tp.lower()]
 
         return tp
+
+    @classmethod
+    def is_valid_field_name(cls, field_name) -> bool:
+        if isinstance(field_name, str) and \
+                len(field_name) > 0 and \
+                (field_name[0] == '_' or field_name[0].isalpha()):
+            for c in field_name:
+                if not (c == '_' or c.isalpha() or c.isdigit()):
+                    return False
+            return True
+
+        return False
 
 
 class ModelFieldException(Exception):

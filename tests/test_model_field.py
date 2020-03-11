@@ -21,7 +21,6 @@ class TestModelField(unittest.TestCase):
 
         with self.assertRaises(Exception):
             ModelField('')
-        
 
     def test_model_field_without_type(self):
         mi = ModelField(
@@ -29,3 +28,9 @@ class TestModelField(unittest.TestCase):
         self.assertEqual(mi.field_promax, "ind_est_vendas")
         self.assertEqual(mi.type_promax, "int")
         self.assertEqual(mi.type_ms, "int")
+
+    def test_valid_field_names(self):
+        self.assertTrue(ModelField.is_valid_field_name('ind_est_vendas'))
+        self.assertTrue(ModelField.is_valid_field_name('_abc_123'))
+        self.assertFalse(ModelField.is_valid_field_name('123abc'))
+        self.assertFalse(ModelField.is_valid_field_name('abc#-'))
