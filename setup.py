@@ -26,7 +26,7 @@ packages = find_packages(where='create_models')
 
 setup(
     name='canaa-model-furlan',
-    version=get_version(os.path.join('create_models', 'main.py')),
+    version=get_version(os.path.join('create_models', '__init__.py')),
     description="Canaa Base model creator",
     long_description=long_description,
     long_description_content_type="text/markdown",
