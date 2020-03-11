@@ -7,3 +7,4 @@ domain
 build
 *.egg-info
 dist
+.cache

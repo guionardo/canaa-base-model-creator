@@ -26,9 +26,7 @@ def create_dto(model: ModelCreator,old_canaa_base:bool):
             linhas.append('\t\t\t"{0}": {1},'.format(
                 field.field_ms, i
             ))
-        linhas.append('\t\t}\n')
-
-    _imp = defaultdict(set)
+        linhas.append('\t\t}\n')   
 
     for field in model.fields:
         if field.primitive_type:
@@ -40,13 +38,13 @@ def create_dto(model: ModelCreator,old_canaa_base:bool):
             class_name = snake_to_camel(field.field_ms)+'DTO'
             linhas.append('\t\tself.{0} = {1}(arg.{2}).to_dict()'.format(
                 field.field_ms,
-                class_name,
+                snake_to_camel(field.type_ms)+"DTO",
                 field.field_promax
             ))
             _imports.add("domain.models.dtos.{0}.{1}".format(
                 model.info.namespace_ms,
                 field.field_ms+'_dto'
-            ), class_name)
+            ), snake_to_camel(field.type_ms)+"DTO")
 
     _imports.add('domain.models.microservice.{0}.{1}'.format(
         model.info.namespace_ms,
