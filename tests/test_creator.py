@@ -37,3 +37,8 @@ class TestCreator(unittest.TestCase):
 
         self.assertListEqual([os.path.isfile(x)
                               for x in self.files], [True for x in self.files])
+
+    # def test_par_0100(self):
+    #     mc = ModelCreator('parameters/parametros_0100.csv',False,False)
+    #     self.assertTrue(mc.is_ok)
+    #     create_files(mc,'.')

@@ -1,4 +1,4 @@
-from .utils import get_words, padr
+from .utils import get_words, padr, snake_to_camel
 
 
 class ModelField:
@@ -91,7 +91,7 @@ class ModelField:
          self._type_ms,
          extra) = get_words(line, 5)
         self._required = extra and extra.lower() == 'required'
-        self._pk = extra and extra.lower() == 'pk'    
+        self._pk = extra and extra.lower() == 'pk'
 
     @property
     def field_promax(self):
@@ -136,7 +136,7 @@ class ModelField:
     @property
     def default_value(self) -> str:
         if not self.primitive_type:
-            return self.type_ms+'()'
+            return snake_to_camel(self.type_ms)+'Model()'
         if self.type_ms in self.DEFAULT_VALUES:
             return self.DEFAULT_VALUES[self.type_ms]
         return 'None'
