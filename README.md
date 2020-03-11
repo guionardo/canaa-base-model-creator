@@ -4,6 +4,8 @@
 
 [![codecov](https://codecov.io/gh/guionardo/canaa-base-model-creator/branch/develop/graphs/commits.svg)]
 
+![Upload Python Package](https://github.com/guionardo/canaa-base-model-creator/workflows/Upload%20Python%20Package/badge.svg)
+
 ## CSV LAYOUT
 
 The file must be an CSV (separated by ; fields), UTF-8 without BOM encoding
