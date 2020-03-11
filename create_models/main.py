@@ -6,8 +6,7 @@ from create_models.example import print_example
 from create_models.logging import get_logger
 from create_models.model_creator import ModelCreator
 
-__description__ = 'Canaa model creator'
-__version__ = '0.0.5'
+from . import __version__, __description__
 
 _usage = """
 
@@ -21,6 +20,7 @@ Generate models from metadata model
     canaa-model -f metadata_model.csv -d output_folder
 
 """
+_testing_args = None
 
 
 def main():
@@ -48,18 +48,29 @@ def main():
                         dest='example',
                         action='store_true',
                         help='print example of metadata file')
-
+    parser.add_argument('--old-canaa-base',
+                        dest='old_canaa_base',
+                        action='store_true',
+                        help='used for old versions of canaa_base (<0.4.8)')
     parser.set_defaults(ignore_field_errors=False,
                         just_validate=False,
-                        example=False)
+                        example=False,
+                        old_canaa_base=False)
 
-    args = parser.parse_args()
+    if _testing_args:
+        args = parser.parse_args(_testing_args)
+    else:
+        args = parser.parse_args()
     if args.example:
-        print_example()
+        print(print_example())
+        if _testing_args:
+            return
         exit(0)
 
     if not args.file_name or not args.destiny_folder:
         parser.print_help()
+        if _testing_args:
+            return
         exit(0)
 
     log = get_logger()
@@ -72,7 +83,8 @@ def main():
             just_validate=args.just_validate)
         if mc.is_ok and not args.just_validate:
 
-            create_files(mc, args.destiny_folder)
+            create_files(mc, args.destiny_folder,
+            old_canaa_base=args.old_canaa_base)
     except Exception as exc:
         log.exception('EXCEPTION: %s', exc)
 

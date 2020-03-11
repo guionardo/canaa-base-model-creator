@@ -24,4 +24,4 @@ cadastro;datetime;register;datetime
 taxa;float;rate;float
 descricao;DescricaoModel;description;DescriptionModel
 """
-    print(example)
+    return example

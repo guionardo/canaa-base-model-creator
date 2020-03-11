@@ -47,10 +47,8 @@ class ModelField:
 
         if isinstance(line, str):
             self.load_from_str(line)
-        elif isinstance(line, dict):
-            self.load_from_dict(line)
-        elif isinstance(line, list):
-            self.load_from_list(line)
+        else:
+            raise ValueError('line argument must be str')
 
         self._type_promax = self._validate_type(self._type_promax)
         self._type_ms = self._validate_type(self._type_ms)
@@ -63,12 +61,13 @@ class ModelField:
             raise ModelFieldException(
                 "Missing {0} : {1}".format(missing_fields, line.strip()))
 
-        if not isinstance(self._pk,bool):
+        if not isinstance(self._pk, bool):
             self._pk = False
-            
-        if not isinstance(self._required,bool):
-            self._required=False or self._pk
 
+        if not isinstance(self._required, bool):
+            self._required = False
+
+        self._required |= self._pk
 
     def __str__(self):
         for index, value in enumerate([self.field_promax, self.type_promax, self.field_ms, self.type_ms, self.extra, self.default_value]):
@@ -92,20 +91,7 @@ class ModelField:
          self._type_ms,
          extra) = get_words(line, 5)
         self._required = extra and extra.lower() == 'required'
-        self._pk = extra and extra.lower() == 'pk'
-
-    def load_from_dict(self, data):
-        raise NotImplementedError()
-
-    def load_from_list(self, data):
-        if len(data) == 5:
-            (self._field_promax,
-             self._type_promax,
-             self._field_ms,
-             self._type_ms,
-             extra) = data
-            self._required = extra and extra.lower() == 'required'
-            self._pk = extra and extra.lower() == 'pk'
+        self._pk = extra and extra.lower() == 'pk'    
 
     @property
     def field_promax(self):
