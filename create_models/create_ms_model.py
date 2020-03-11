@@ -37,7 +37,7 @@ def create_ms_model(model: ModelCreator, old_canaa_base: bool):
                 snake_to_camel(field.type_ms)+'Model',
                 field.default_value
             ))
-            _imports.add('domain.models.microservice.{0}.{1}'.format(
+            _imports.add('domain.models.microservice.{0}.{1}_model'.format(
                 model.info.namespace_ms,
                 camel_to_snake(field.type_ms)),
                 snake_to_camel(field.type_ms)+"Model")
