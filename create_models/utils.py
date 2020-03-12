@@ -18,7 +18,10 @@ def camel_to_snake(text: str):
         else:
             letters.append(letter.lower())
         last_letter = letter
-    return "".join(letters)
+    result = "".join(letters)
+    while "__" in result:
+        result = result.replace("__", "_")
+    return result
 
 
 def snake_to_camel(text: str):
