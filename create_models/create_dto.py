@@ -7,7 +7,7 @@ from .utils import snake_to_camel, created_by
 from .imports import Imports
 
 
-def create_dto(model: ModelCreator,old_canaa_base:bool):
+def create_dto(model: ModelCreator, old_canaa_base: bool):
     linhas = [
         'class {0}DTO({0}Model):\n'.format(
             snake_to_camel(model.info.ms_model)), '\tdef __init__(self, arg: {0}Model):'.format(
@@ -26,7 +26,7 @@ def create_dto(model: ModelCreator,old_canaa_base:bool):
             linhas.append('\t\t\t"{0}": {1},'.format(
                 field.field_ms, i
             ))
-        linhas.append('\t\t}\n')   
+        linhas.append('\t\t}\n')
 
     for field in model.fields:
         if field.primitive_type:
@@ -35,7 +35,6 @@ def create_dto(model: ModelCreator,old_canaa_base:bool):
                 field.field_promax
             ))
         else:
-            class_name = snake_to_camel(field.field_ms)+'DTO'
             linhas.append('\t\tself.{0} = {1}(arg.{2}).to_dict()'.format(
                 field.field_ms,
                 snake_to_camel(field.type_ms)+"DTO",
@@ -43,7 +42,7 @@ def create_dto(model: ModelCreator,old_canaa_base:bool):
             ))
             _imports.add("domain.models.dtos.{0}.{1}".format(
                 model.info.namespace_ms,
-                field.field_ms+'_dto'
+                field.type_ms+'_dto'
             ), snake_to_camel(field.type_ms)+"DTO")
 
     _imports.add('domain.models.microservice.{0}.{1}'.format(

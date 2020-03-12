@@ -22,6 +22,7 @@ class ModelCreator:
         self._ok = False
         self._ignore_field_errors = ignore_field_errors
         self._just_validate = just_validate
+        self._has_non_primitive_fields = False
         ext = os.path.splitext(file_name)
         if len(ext) > 0:
             ext = ext[1].lower()
@@ -40,9 +41,16 @@ class ModelCreator:
             str(self.info),
             "{0} fields".format(len(self.fields))])
 
+    def __repr__(self):
+        return str(self)
+
     @property
     def is_ok(self):
         return self._ok
+
+    @property
+    def has_non_primitive_fields(self):
+        return self._has_non_primitive_fields
 
     @property
     def promax_model_file_name(self):
@@ -87,6 +95,7 @@ class ModelCreator:
 
         try:
             field = ModelField(field_data)
+            self._has_non_primitive_fields |= not field.primitive_type
         except Exception as exc:
             exc_msg = "".join([
                 "" if line_no < 1 else "line #{0}: ".format(line_no),

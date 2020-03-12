@@ -5,4 +5,3 @@ omit =
     */__init__.py
     */tests/*    
     setup.py
-    create_models/main.py

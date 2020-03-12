@@ -69,6 +69,16 @@ class ModelField:
 
         self._required |= self._pk
 
+    def __repr__(self):
+        return " - ".join([
+            "OK" if self.ok else "!!",
+            self.field_promax+":" + self.type_promax,
+            self.field_ms +
+            ":"+self.type_ms,
+            self.extra,
+            self.default_value
+        ])
+
     def __str__(self):
         for index, value in enumerate([self.field_promax, self.type_promax, self.field_ms, self.type_ms, self.extra, self.default_value]):
             self._COL_W[index] = max(

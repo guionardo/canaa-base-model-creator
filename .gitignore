@@ -8,3 +8,5 @@ build
 *.egg-info
 dist
 .cache
+htmlcov
+parameters

@@ -10,7 +10,6 @@ class TestModelJsonCache(unittest.TestCase):
             "id": 0,
             "name": "User"
         }
-        return super().setUp()
 
     def test_get_set_model_json(self):
         self.assertTrue(set_model_json('dto', 'test', self.test_model))
