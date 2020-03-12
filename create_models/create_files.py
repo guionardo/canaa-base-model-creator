@@ -1,7 +1,9 @@
 import os
 
 from .create_dto import create_dto
+from .create_ms_json import create_ms_json
 from .create_ms_model import create_ms_model
+from .create_promax_json import create_promax_json
 from .create_promax_model import create_promax_model
 from .logging import get_logger
 from .model_creator import ModelCreator
@@ -12,9 +14,6 @@ log = get_logger()
 def create_files(model: ModelCreator, destiny_folder: str, **kwargs):
 
     log.info('Creating model files for {0}'.format(model))
-
-    if not os.path.isdir(destiny_folder):
-        raise FileNotFoundError(destiny_folder)
 
     destiny_folder = os.path.abspath(destiny_folder)
 
@@ -34,9 +33,12 @@ def create_files(model: ModelCreator, destiny_folder: str, **kwargs):
         destiny_folder, 'domain', 'models', 'dtos', namespace_ms)
     dto_file = os.path.join(dto_folder, model.dto_file_name)
     old_canaa_base = 'old_canaa_base' in kwargs and kwargs['old_canaa_base']
+
+    mock_folder = os.path.join(destiny_folder, 'domain', 'mocks', namespace_ms)
+
     try:
         folders = []
-        for folder in [promax_model_folder, ms_model_folder, dto_folder]:
+        for folder in [promax_model_folder, ms_model_folder, dto_folder, mock_folder]:
             if not os.path.isdir(folder):
                 os.makedirs(folder)
                 create_init(folder)
@@ -50,30 +52,34 @@ def create_files(model: ModelCreator, destiny_folder: str, **kwargs):
         log.error("Folder error: %s", str(exc))
         return False
 
-    return process_files(model, promax_file, ms_file, dto_file ,old_canaa_base)
+    return process_files(model, promax_file, ms_file, dto_file, old_canaa_base, mock_folder)
 
 
-def process_files(model, promax_file, ms_file, dto_file,old_canaa_base):
+def process_files(model, promax_file, ms_file, dto_file, old_canaa_base, mock_folder):
     processes = {
         "PROMAX": {
             "file": promax_file,
             "method": create_promax_model,
+            "json": create_promax_json
         },
         "MICROSERVICE": {
             "file": ms_file,
-            "method": create_ms_model
+            "method": create_ms_model,
+            "json": create_ms_json
         },
         "DTO": {
             "file": dto_file,
-            "method": create_dto
+            "method": create_dto,
+            "json": lambda x, y: True
         }
     }
     try:
         for process in processes:
             filename = processes[process]['file']
             method = processes[process]['method']
+            create_json = processes[process]['json']
 
-            content = method(model,old_canaa_base)
+            content = method(model, old_canaa_base)
             if os.path.isfile(filename):
                 os.remove(filename)
 
@@ -87,6 +93,7 @@ def process_files(model, promax_file, ms_file, dto_file,old_canaa_base):
                     "File not found after generation: {0}".format(filename))
 
             create_init(filename)
+            create_json(model, mock_folder)
 
         log.info('Files created successfully!')
         return True

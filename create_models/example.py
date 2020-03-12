@@ -1,4 +1,4 @@
-def print_example():
+def print_example(_testing_args):
     example = """
 The file must be an CSV (separated by ; fields), UTF-8 without BOM encoding
 
@@ -24,4 +24,7 @@ cadastro;datetime;register;datetime
 taxa;float;rate;float
 descricao;DescricaoModel;description;DescriptionModel
 """
-    return example
+    print(example)
+    if _testing_args:
+        return True
+    exit(0)     # pragma: no cover

@@ -44,7 +44,7 @@ def _cache_file(model_type, model_name):
 def get_model_json(model_type: str, model_name: str):
     cache_file = _cache_file(model_type, model_name)
     result = None
-    if cache_file:
+    if cache_file and os.path.isfile(cache_file):
         try:
             with open(cache_file) as f:
                 result = json.loads(f.read())
@@ -52,6 +52,8 @@ def get_model_json(model_type: str, model_name: str):
             _log.error('ERROR ON READ MODEL JSON : %s - %s',
                        cache_file,
                        str(exc))
+    else:
+        _log.warning('MODEL JSON NOT FOUND: %s', cache_file)
     return result
 
 
@@ -67,4 +69,31 @@ def set_model_json(model_type: str, model_name: str, model: dict) -> bool:
             _log.error('ERROR ON WRITE MODEL JSON : %s - %s',
                        cache_file,
                        str(exc))
+    else:
+        _log.warning('MODEL JSON NOT FOUND: %s', cache_file)
+    return result
+
+
+def copy_model_json(model_type: str, model_name: str, destiny_folder: str) -> bool:
+    cache_file = _cache_file(model_type, model_name)
+    result = False
+    if os.path.isdir(destiny_folder):
+        if cache_file and os.path.isfile(cache_file):
+            try:
+                model = get_model_json(model_type, model_name)
+                json_file = os.path.join(
+                    destiny_folder, os.path.basename(cache_file))
+                with open(json_file, 'w') as f:
+                    result = f.write(json.dumps(
+                        model, default=str, indent=True)) > 0
+
+            except Exception as exc:
+                _log.error('ERROR ON WRITE MODEL JSON : %s - %s',
+                           destiny_folder,
+                           str(exc))
+        else:
+            _log.warning('MODEL JSON NOT FOUND: %s', cache_file)
+    else:
+        _log.error('DESTINY FOLDER NOT FOUND %s', destiny_folder)
+
     return result

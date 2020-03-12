@@ -1,41 +1,46 @@
 import argparse
 import sys
+import os
 
 from create_models.create_files import create_files
 from create_models.example import print_example
 from create_models.logging import get_logger
 from create_models.model_creator import ModelCreator
+from create_models.process_files import process_files, create_list_of_files
 
 from . import __version__, __description__
 
 _usage = """
 
-Get an metadata model example:
+Gets an metadata model example:
     canaa-model --example
 
-Validate an metadata model
-    canaa-model -f metadata_model.csv --just-validate
+Validates an metadata model
+    canaa-model --source metadata_model.csv --just-validate
 
-Generate models from metadata model
-    canaa-model -f metadata_model.csv -d output_folder
+Generates models from metadata model
+    canaa-model --source metadata_model.csv --destiny output_folder
+
+    canaa-model --source metadata_models_folder --destiny output_folder
 
 """
 _testing_args = None
 
 
-def main():
-    print(f'\n{__description__} v{__version__}\n')
-
+def create_parser():
     parser = argparse.ArgumentParser(
         description='{0} v{1}'.format(__description__, __version__),
         usage=_usage)
-    parser.add_argument('--file', '-f',
-                        dest='file_name',
-                        help='model metadata file (csv)')
+    parser.add_argument('--source', '-s',
+                        dest='source',
+                        help='model metadata file (csv) or folder with csv files (you can use * and ? masks)',
+                        type=lambda x: is_valid_file(parser, x))
     parser.add_argument('--destiny', '-d',
                         dest='destiny_folder',
-                        help='destiny folder',
-                        required=('--file' in sys.argv or '-f' in sys.argv) and not('--just-validate' in sys.argv))
+                        help='Path to create "model" folder and DTO, Promax and Microservice python files and JSON mocks (default = current directory)',
+                        required=(
+                            '--source' in sys.argv or '-s' in sys.argv) and not('--just-validate' in sys.argv),
+                        type=lambda x: is_valid_folder(parser, x))
     parser.add_argument('--ignore-field-errors',
                         dest='ignore_field_errors',
                         action='store_true',
@@ -48,45 +53,81 @@ def main():
                         dest='example',
                         action='store_true',
                         help='print example of metadata file')
-    parser.add_argument('--old-canaa-base',
-                        dest='old_canaa_base',
-                        action='store_true',
-                        help='used for old versions of canaa_base (<0.4.8)')
+    parser.add_argument('--version', '-v',
+                        dest='version',
+                        action='store_true')
+    parser.add_argument('--foo',
+                        action="store_true",
+                        help=argparse.SUPPRESS)
     parser.set_defaults(ignore_field_errors=False,
                         just_validate=False,
                         example=False,
-                        old_canaa_base=False)
+                        old_canaa_base=False,
+                        version=False,
+                        destiny_folder='.')
+
+    return parser
+
+
+def is_valid_file(parser, arg):
+    files = create_list_of_files(arg)
+    if len(files) == 0:
+        if _testing_args:
+            raise FileNotFoundError(arg)
+        sys.exit(2)
+    else:
+        return arg
+
+
+def is_valid_folder(parser, arg):
+    if not os.path.isdir(arg):
+        if _testing_args:
+            raise FileNotFoundError(arg)
+        parser.error("The folder %s does not exist!" % arg)
+    else:
+        return os.path.abspath(arg)
+
+
+def show_version(_testing_args):
+    print(f'{__description__} v{__version__}')
+    if _testing_args:
+        return True
+    exit(0)
+
+
+def main():
+    # print(f'{__description__} v{__version__}')
+
+    parser = create_parser()
 
     if _testing_args:
         args = parser.parse_args(_testing_args)
+        sys.argv.append(_testing_args)
     else:
         args = parser.parse_args()
-    if args.example:
-        print(print_example())
-        if _testing_args:
-            return
-        exit(0)
 
-    if not args.file_name or not args.destiny_folder:
+    if args.example:
+        return print_example(_testing_args)
+
+    if args.version:
+        return show_version(_testing_args)
+
+    if not args.source:
         parser.print_help()
         if _testing_args:
-            return
-        exit(0)
+            return False
+        exit(1)
 
-    log = get_logger()
-    try:
-        if args.just_validate:
-            args.ignore_field_errors = False
-        mc = ModelCreator(
-            file_name=args.file_name,
-            ignore_field_errors=args.ignore_field_errors,
-            just_validate=args.just_validate)
-        if mc.is_ok and not args.just_validate:
+    if not args.just_validate and not args.destiny_folder:
+        if _testing_args:
+            return False
+        parser.error("")
 
-            create_files(mc, args.destiny_folder,
-            old_canaa_base=args.old_canaa_base)
-    except Exception as exc:
-        log.exception('EXCEPTION: %s', exc)
+    source = args.source
+    destiny_folder = args.destiny_folder
+
+    return process_files(source, destiny_folder, args.just_validate,
+                         args.ignore_field_errors, args.old_canaa_base)
 
 
 if __name__ == "__main__":

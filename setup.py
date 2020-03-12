@@ -20,35 +20,53 @@ def get_version(rel_path):
         raise RuntimeError("Unable to find version string.")
 
 
+def get_definitions(rel_path, *words):
+    result = []
+    for line in read(rel_path).splitlines():
+        for word in words:
+            if line.startswith(f'__{word}__'):
+                delim = '"' if '"' in line else "'"
+                result.append(line.split(delim)[1])
+    return result
+
+
 long_description = read('README.md')
 
 packages = find_packages(where='create_models')
+_version, _description, _author, _author_email = get_definitions(
+    os.path.join('create_models', '__init__.py'),
+    'version',
+    'description',
+    'author',
+    'author_email')
 
 setup(
     name='canaa-model-furlan',
-    version=get_version(os.path.join('create_models', '__init__.py')),
-    description="Canaa Base model creator",
+    version=_version,
+    description=_description,
     long_description=long_description,
     long_description_content_type="text/markdown",
     license='MIT',
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Beta",
+        "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Topic :: Software Development :: Build Tools",
+        "Topic :: Utilities",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8"
     ],
-    url='https://pip.pypa.io/',
+    url='https://github.com/guionardo/canaa-base-model-creator',
     keywords='canaa hbsis',
     project_urls={
-        "Documentation": "https://pip.pypa.io",
+        "Documentation": "https://github.com/guionardo/canaa-base-model-creator/wiki",
         "Source": "https://github.com/guionardo/canaa-base-model-creator",
     },
-    author='Guionardo Furlan',
-    author_email='guionardo@gmail.com',
+    author=_author,
+    author_email=_author_email,
     packages=find_packages(
         where=".",
         exclude=["tests"],
@@ -59,6 +77,6 @@ setup(
         ]
     },
     install_requires=[],
-    zip_safe=False,
+    zip_safe=True,
     python_requires='>=3.6.*'
 )
