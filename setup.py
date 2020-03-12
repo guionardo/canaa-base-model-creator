@@ -21,13 +21,15 @@ def get_version(rel_path):
 
 
 def get_definitions(rel_path, *words):
-    result = []
+    dwords = {word: None for word in words}
     for line in read(rel_path).splitlines():
         for word in words:
             if line.startswith(f'__{word}__'):
                 delim = '"' if '"' in line else "'"
-                result.append(line.split(delim)[1])
-    return result
+                dwords[word] = line.split(delim)[1]
+                break
+
+    return [dwords[word] for word in dwords]
 
 
 long_description = read('README.md')
