@@ -2,18 +2,16 @@ import os
 from collections import defaultdict
 from datetime import datetime
 
+from .imports import Imports
 from .logging import get_logger
 from .model_field import ModelField
 from .model_info import ModelInfo
-from .utils import camel_to_snake, snake_to_camel
-from .imports import Imports
+from .utils import camel_to_snake, get_file_extension, snake_to_camel
 
 
 class ModelCreator:
 
-    def __init__(self, file_name, ignore_field_errors, just_validate):
-        if not os.path.exists(file_name):
-            raise FileNotFoundError(file_name)
+    def __init__(self, origin, ignore_field_errors, just_validate):
         self.log = get_logger()
         self.fields = []
         self.info: ModelInfo = None
@@ -23,15 +21,20 @@ class ModelCreator:
         self._ignore_field_errors = ignore_field_errors
         self._just_validate = just_validate
         self._has_non_primitive_fields = False
-        ext = os.path.splitext(file_name)
-        if len(ext) > 0:
-            ext = ext[1].lower()
-            self.log.info('ModelCreator: %s', file_name)
-            if ext == '.csv':
-                self._ok = self.load_from_csv(file_name)
+        if isinstance(origin, list):
+            self._ok = self.load_from_list(origin)
+        elif isinstance(origin, str):
+            if not os.path.exists(origin):
+                raise FileNotFoundError(origin)
+            ext = get_file_extension(origin).lower()
+            if ext:
 
-        else:
-            raise ValueError('Invalid file type: {0}'.format(file_name))
+                self.log.info('ModelCreator: %s', origin)
+                if ext == '.csv':
+                    self._ok = self.load_from_csv(origin)
+
+            else:
+                raise ValueError('Invalid file type: {0}'.format(origin))
 
     def __str__(self):
         if not self._ok:
@@ -43,6 +46,9 @@ class ModelCreator:
 
     def __repr__(self):
         return str(self)
+
+    def __eq__(self, value):
+        return isinstance(value, ModelCreator) and str(self.info) == str(value.info)
 
     @property
     def is_ok(self):
@@ -70,24 +76,30 @@ class ModelCreator:
             return camel_to_snake(self.info.ms_model)+'_dto.py'
         return "undefined_dto_model.py"
 
-    def load_from_csv(self, file_name):
+    def load_from_list(self, records: list):
+        if not isinstance(records, list) or len(records) < 2:
+            return False
+
         has_head = False
 
-        with open(file_name, 'r', encoding='utf-8') as f:
-            line_no = 0
-            for linha in f.readlines():
-                linha = linha.strip()
-                if linha.startswith('#'):
-                    continue
-                line_no += 1
-                if not has_head:
-                    self.info = ModelInfo(linha)
-                    has_head = True
-                else:
-                    if not self._add_field(linha, line_no):
-                        return False
+        line_no = 0
+        for linha in records:
+            linha = linha.strip()
+            if linha.startswith('#'):
+                continue
+            line_no += 1
+            if not has_head:
+                self.info = ModelInfo(linha)
+                has_head = True
+            else:
+                if not self._add_field(linha, line_no):
+                    return False
 
         return True
+
+    def load_from_csv(self, file_name):
+        with open(file_name, 'r', encoding='utf-8') as f:
+            return self.load_from_list(f.readlines())
 
     def _add_field(self, field_data, line_no: int = 0):
         if isinstance(field_data, str) and not field_data:
@@ -124,3 +136,13 @@ class ModelCreator:
 
     def imports(self):
         return self._imports.to_code().splitlines()
+
+    @staticmethod
+    def sorted_creators_list(creators_list: list):
+        # Create unique list
+        cd = {str(creator.info): creator for creator in creators_list}
+        cl = sorted(
+            [cd[n] for n in cd.keys() if cd[n].is_ok],
+            key=lambda x: '1' if x.has_non_primitive_fields else '0')
+
+        return cl

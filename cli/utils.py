@@ -1,26 +1,23 @@
 import getpass
+import os
 from datetime import datetime
 
-from create_models import __version__
+from cli import __version__
 
 
 def camel_to_snake(text: str):
-    """
-    Converts CamelCase to snake_case
-    """
     letters = []
-    last_letter = 'a'
+    last_letter = None
     for letter in text:
-        if (letter.isupper() or letter.isdigit()) and \
-            not (last_letter.isupper() or last_letter.isdigit()) and \
-                len(letters) > 0:
+        if last_letter and \
+            (letter.isdigit() != last_letter.isdigit() or
+                letter.isupper() and not last_letter.isupper()):
             letters.append('_'+letter.lower())
         else:
             letters.append(letter.lower())
         last_letter = letter
+
     result = "".join(letters)
-    while "__" in result:
-        result = result.replace("__", "_")
     return result
 
 
@@ -66,3 +63,8 @@ def created_by():
         datetime.now(),
         getpass.getuser()
     )
+
+
+def get_file_extension(filename):
+    se = os.path.splitext(filename)
+    return "" if len(se) < 2 else se[1]

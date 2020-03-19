@@ -1,8 +1,9 @@
-import unittest
 import os
-from create_models.create_promax_json import create_promax_json
-from create_models.model_creator import ModelCreator
-from create_models.create_ms_json import create_ms_json
+import unittest
+
+from cli.create_ms_json import create_ms_json
+from cli.create_promax_json import create_promax_json
+from cli.model_creator import ModelCreator
 
 
 class TestJSON(unittest.TestCase):

@@ -1,5 +1,8 @@
-def print_example(_testing_args):
-    example = """
+from cli import __description__, __version__
+
+_help = {
+    "version": f"{__description__} v{__version__}",
+    "example": """
 The file must be an CSV (separated by ; fields), UTF-8 without BOM encoding
 
 The first line defines the model names:
@@ -23,8 +26,30 @@ ativo;bool;active;bool;
 cadastro;datetime;register;datetime
 taxa;float;rate;float
 descricao;DescricaoModel;description;DescriptionModel
-"""
-    print(example)
-    if _testing_args:
-        return True
-    exit(0)     # pragma: no cover
+""",
+    "usage": """
+
+Gets an metadata model example:
+    canaa-model --example
+
+Validates an metadata model
+    canaa-model --source metadata_model.csv --just-validate
+
+Generates models from metadata model
+    canaa-model --source metadata_model.csv --destiny output_folder
+
+    canaa-model --source metadata_models_folder --destiny output_folder
+
+"""}
+
+
+def get_help(what):
+    if what in _help:
+        return _help[what]
+    return "# ERROR: {0} ISN´T A SOURCE OF HELP"
+
+
+def print_help(what):
+    print(get_help(what))
+
+    return 0

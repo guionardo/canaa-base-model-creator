@@ -1,6 +1,9 @@
+import os
 import unittest
 
-from create_models.utils import camel_to_snake, snake_to_camel, get_words, padr, created_by
+from cli.utils import (camel_to_snake, created_by,
+                                 get_file_extension, get_words, padr,
+                                 snake_to_camel)
 
 
 class TestUtils(unittest.TestCase):
@@ -24,14 +27,18 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(w1, 'word1')
         self.assertEqual(w2, 'word2')
 
-        w1, w2 = get_words("word1",2)
+        w1, w2 = get_words("word1", 2)
         self.assertEqual(w1, 'word1')
         self.assertIsNone(w2)
 
-    def test_padr(self):        
-        self.assertEqual(padr('abc',10),'abc       ')
-        self.assertEqual(padr('abc',0),'abc')
+    def test_padr(self):
+        self.assertEqual(padr('abc', 10), 'abc       ')
+        self.assertEqual(padr('abc', 0), 'abc')
 
     def test_created_by(self):
         cb = created_by()
-        self.assertTrue(cb[:10]=='# CREATED ')
+        self.assertTrue(cb[:10] == '# CREATED ')
+
+    def test_get_file_extension(self):
+        fn = os.path.join("docs", "test_file.txt")
+        self.assertEqual(get_file_extension(fn), '.txt')

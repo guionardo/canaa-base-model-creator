@@ -33,10 +33,10 @@ def get_definitions(rel_path, *words):
 
 
 long_description = read('README.md')
-
-packages = find_packages(where='create_models')
+base_folder = 'cli'
+packages = find_packages(where=base_folder)
 _version, _description, _author, _author_email = get_definitions(
-    os.path.join('create_models', '__init__.py'),
+    os.path.join(base_folder, '__init__.py'),
     'version',
     'description',
     'author',
@@ -75,10 +75,13 @@ setup(
     ),
     entry_points={
         "console_scripts": [
-            "canaa-model=create_models.main:main"
+            "canaa-model="+base_folder+".main:main"
         ]
     },
-    install_requires=[],
-    zip_safe=True,
+    install_requires=[
+        "Faker",
+        "openpyxl"
+    ],
+    zip_safe=False,
     python_requires='>=3.6.*'
 )

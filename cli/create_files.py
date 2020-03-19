@@ -114,5 +114,5 @@ def create_init(folder):
     init_file = os.path.join(folder, '__init__.py')
     if not os.path.isfile(init_file):
         with open(init_file, 'w') as f:
-            f.write(f'"""{folder}"""\n')
+            f.write(f'"""{repr(folder)}"""\n')
     folder = os.path.dirname(folder)
