@@ -1,4 +1,3 @@
-import argparse
 import os
 import unittest
 
@@ -36,7 +35,7 @@ class TestArguments(unittest.TestCase):
 
     def test_source_not_found(self):
         with self.assertRaises(Exception):
-            Arguments.create('-s', 'file_not_found.csv')
+            Arguments.create('testing', '-s', 'file_not_found.csv')
 
     def test_empty_source(self):
         c = Arguments.create('--foo')
@@ -44,11 +43,11 @@ class TestArguments(unittest.TestCase):
 
     def test_source_without_destiny(self):
         with self.assertRaises(Exception):
-            Arguments.create('-s', self.source)
+            Arguments.create('testing', '-s', self.source)
 
     def test_destiny_not_found(self):
         with self.assertRaises(Exception):
-            Arguments.create('-s', self.source, '-d', 'notfound')
+            Arguments.create('testing', '-s', self.source, '-d', 'notfound')
 
     def test_origin_file_with_destiny(self):
         c = Arguments.create('-s', self.source, '-d', '.')
@@ -62,3 +61,9 @@ class TestArguments(unittest.TestCase):
         c = Arguments.create(
             '-s', os.path.join('docs', 'example_d*.csv'), '-d', '.')
         self.assertEqual(c.validate(), 2)
+
+    def test_origin_empty_folder(self):
+        with self.assertRaises(Exception):
+            Arguments.create(
+                '-s', os.path.join('docs', 'empty_folder'), 'testing'
+            )

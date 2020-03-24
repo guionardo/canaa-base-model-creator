@@ -1,12 +1,10 @@
 import os
-from collections import defaultdict
-from datetime import datetime
 
 from .imports import Imports
 from .logging import get_logger
 from .model_field import ModelField
 from .model_info import ModelInfo
-from .utils import camel_to_snake, get_file_extension, snake_to_camel
+from .utils import camel_to_snake, get_file_extension
 
 
 class ModelCreator:
@@ -21,6 +19,7 @@ class ModelCreator:
         self._ignore_field_errors = ignore_field_errors
         self._just_validate = just_validate
         self._has_non_primitive_fields = False
+        self._submodels = {}
         if isinstance(origin, list):
             self._ok = self.load_from_list(origin)
         elif isinstance(origin, str):
@@ -48,7 +47,8 @@ class ModelCreator:
         return str(self)
 
     def __eq__(self, value):
-        return isinstance(value, ModelCreator) and str(self.info) == str(value.info)
+        return isinstance(value, ModelCreator) and \
+            str(self.info) == str(value.info)
 
     @property
     def is_ok(self):
@@ -75,6 +75,15 @@ class ModelCreator:
         if self.info:
             return camel_to_snake(self.info.ms_model)+'_dto.py'
         return "undefined_dto_model.py"
+
+    @property
+    def submodels(self) -> dict:
+        """
+        Returns submodels as dict
+
+        {"model_name":[("field1","type"),("field2","type")]}
+        """
+        return self._submodels
 
     def load_from_list(self, records: list):
         if not isinstance(records, list) or len(records) < 2:
@@ -108,6 +117,7 @@ class ModelCreator:
         try:
             field = ModelField(field_data)
             self._has_non_primitive_fields |= not field.primitive_type
+            self._submodels.update(field.submodels)
         except Exception as exc:
             exc_msg = "".join([
                 "" if line_no < 1 else "line #{0}: ".format(line_no),
@@ -122,7 +132,7 @@ class ModelCreator:
         self.log.info(str(field))
 
         self.fields.append(field)
-        if field.pk:
+        if field.is_pk:
             self.pks.append(field)
 
         for datetime_type in ['datetime', 'time', 'date']:

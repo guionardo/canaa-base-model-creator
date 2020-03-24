@@ -1,7 +1,7 @@
-from cli import __description__, __version__
+from cli import __description__, __version__, __tool_name__
 
 _help = {
-    "version": f"{__description__} v{__version__}",
+    "version": "{description} v{version}",
     "example": """
 The file must be an CSV (separated by ; fields), UTF-8 without BOM encoding
 
@@ -30,17 +30,25 @@ descricao;DescricaoModel;description;DescriptionModel
     "usage": """
 
 Gets an metadata model example:
-    canaa-model --example
+    {tool_name} --example
 
 Validates an metadata model
-    canaa-model --source metadata_model.csv --just-validate
+    {tool_name} --source metadata_model.csv --just-validate
 
 Generates models from metadata model
-    canaa-model --source metadata_model.csv --destiny output_folder
+    {tool_name} --source metadata_model.csv --destiny output_folder
 
-    canaa-model --source metadata_models_folder --destiny output_folder
+    {tool_name} --source metadata_models_folder --destiny output_folder
+
+    {tool_name} --source metadata_model.xlsx --destiny output_folder
 
 """}
+
+for key in _help:
+    _help[key] = _help[key].format(
+        tool_name=__tool_name__,
+        version=__version__,
+        description=__description__)
 
 
 def get_help(what):

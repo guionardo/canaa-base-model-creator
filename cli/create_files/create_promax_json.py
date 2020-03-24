@@ -1,9 +1,7 @@
-import json
-
-from .model_creator import ModelCreator
-from .model_field import ModelField
-from .utils import camel_to_snake
-from .cache import get_cache
+from cli.model_creator import ModelCreator
+from cli.model_field import ModelField
+from cli.utils import camel_to_snake
+from cli.cache import get_cache
 
 
 def create_promax_json(model: ModelCreator, destiny_folder: str):

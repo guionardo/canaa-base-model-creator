@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from .imports import Imports
-from .model_creator import ModelCreator
-from .model_field import ModelField
-from .utils import camel_to_snake, created_by, snake_to_camel
+from cli.imports import Imports
+from cli.model_creator import ModelCreator
+from cli.model_field import ModelField
+from cli.utils import camel_to_snake, created_by, snake_to_camel
 
 
 def create_ms_model(model: ModelCreator, old_canaa_base: bool):

@@ -1,32 +1,11 @@
+from .data_type.complex_types import parse_json_model
+from .data_type.primitive_types import (get_default_primitive_type_as_str,
+                                        get_type_from_str, is_primitive_type)
 from .utils import get_words, padr, snake_to_camel
+from .model_candidate import ModelCandidate
 
 
 class ModelField:
-
-    TYPES = {
-        "int": "int",
-        "number": "int",
-        "float": "float",
-        "string": "str",
-        "boolean": "bool",
-        "str": "str",
-        "bool": "bool",
-        "date": "date",
-        "datetime": "datetime",
-        "time": "time"
-    }
-
-    DEFAULT_VALUES = {
-        "number": "0",
-        "float": "0.0",
-        "string": "None",
-        "boolean": "False",
-        "str": "None",
-        "bool": "False",
-        "date": "None",
-        "datetime": "None",
-        "time": "None"
-    }
 
     _COL_W = [0, 25, 10, 25, 10, 10]
 
@@ -44,20 +23,50 @@ class ModelField:
         self._type_ms: str = None
         self._required: bool = False
         self._pk: bool = False
+        self._submodels: dict = {}
 
         if isinstance(line, str):
             self.load_from_str(line)
         else:
             raise ValueError('line argument must be str')
 
-        self._type_promax = self._validate_type(self._type_promax)
-        self._type_ms = self._validate_type(self._type_ms)
+        self._type_promax, sm_promax_fields = self._validate_type(
+            tp=self._type_promax,
+            name=self._field_promax)
+        self._type_ms, sm_ms_fields = self._validate_type(
+            tp=self._type_ms,
+            name=self._field_ms)
+
+        if sm_promax_fields:
+            if not sm_ms_fields:
+                raise ModelFieldException(
+                    "Missing submodel for MS in field [%s/%s]",
+                    self._field_promax,
+                    self._field_ms)
+            mc = ModelCandidate(promax_namespace='promax_ns',
+                                promax_name=self._field_promax,
+                                promax_fields=sm_promax_fields,
+                                ms_namespace='ms_ns',
+                                ms_name=self._field_ms,
+                                ms_fields=sm_ms_fields)
+            self._submodels[str(mc)] = mc
+
         if not self._type_ms:
             self._type_ms = self._type_promax
+            if self._type_promax in self._submodels and \
+                    self._type_ms not in self._submodels:
+                self._submodels[self._type_ms] = self._submodels[self._type_promax]
 
-        if not self.ok:
+        if self._type_promax in self._submodels and \
+                not self._validate_submodels(self._type_promax, self._type_ms):
+            raise ModelFieldException(
+                "Invalid submodel definition for field [%s/%s]",
+                self._field_promax, self._field_ms)
+
+        if not self.is_ok:
             missing_fields = [field_name for field_name in [
-                'field_promax', 'type_promax', 'field_ms'] if not getattr(self, field_name, None)]
+                'field_promax', 'type_promax', 'field_ms']
+                if not getattr(self, field_name, None)]
             raise ModelFieldException(
                 "Missing {0} : {1}".format(missing_fields, line.strip()))
 
@@ -71,7 +80,7 @@ class ModelField:
 
     def __repr__(self):
         return " - ".join([
-            "OK" if self.ok else "!!",
+            "OK" if self.is_ok else "!!",
             self.field_promax+":" + self.type_promax,
             self.field_ms +
             ":"+self.type_ms,
@@ -80,12 +89,17 @@ class ModelField:
         ])
 
     def __str__(self):
-        for index, value in enumerate([self.field_promax, self.type_promax, self.field_ms, self.type_ms, self.extra, self.default_value]):
+        for index, value in enumerate([self.field_promax,
+                                       self.type_promax,
+                                       self.field_ms,
+                                       self.type_ms,
+                                       self.extra,
+                                       self.default_value]):
             self._COL_W[index] = max(
                 self._COL_W[index], len(value))
 
         return " - ".join([
-            "OK" if self.ok else "!!",
+            "OK" if self.is_ok else "!!",
             padr(self.field_promax, self._COL_W[0])+":"+padr(
                 self.type_promax, self._COL_W[1]),
             padr(self.field_ms, self._COL_W[2]) +
@@ -102,6 +116,13 @@ class ModelField:
          extra) = get_words(line, 5)
         self._required = extra and extra.lower() == 'required'
         self._pk = extra and extra.lower() == 'pk'
+
+    def _validate_submodels(self, type_promax, type_ms):
+        """ Returns True if both submodels have same length """
+        return type_promax in self._submodels and \
+            type_ms in self._submodels and \
+            len(self._submodels[type_promax]) > 0 and \
+            len(self._submodels[type_promax]) == len(self._submodels[type_ms])
 
     @property
     def field_promax(self):
@@ -132,11 +153,11 @@ class ModelField:
         return ''
 
     @property
-    def pk(self):
+    def is_pk(self) -> bool:
         return self._pk
 
     @property
-    def ok(self):
+    def is_ok(self):
         return self._field_promax and \
             self._type_promax and \
             self.field_ms and \
@@ -145,25 +166,41 @@ class ModelField:
 
     @property
     def primitive_type(self):
-        return self._type_promax in self.TYPES
+        return is_primitive_type(self._type_promax)
 
     @property
     def default_value(self) -> str:
         if not self.primitive_type:
             return snake_to_camel(self.type_ms)+'Model()'
-        if self.type_ms in self.DEFAULT_VALUES:
-            return self.DEFAULT_VALUES[self.type_ms]
-        return 'None'
+        return get_default_primitive_type_as_str(self.type_ms)
 
-    @classmethod
-    def _validate_type(cls, tp: str):
+    @property
+    def submodels(self) -> dict:
+        """
+        Returns a dict {"ModelCandidate":ModelCandidate()}
+        """
+        return self._submodels
+
+    def _validate_type(self, tp: str, name: str = None):
+        """
+        Validates type, returning ("normalized_type", submodel_fields)
+        """
         if tp is None:
-            return None
+            return None, None
 
-        if tp.lower() in cls.TYPES:
-            tp = cls.TYPES[tp.lower()]
+        fields = None
+        if tp.startswith('{'):
+            # Submodel defined in JSON
+            fields = parse_json_model(tp, modelname=name)
+            if not fields:
+                return None, None
+            return snake_to_camel(name), fields
 
-        return tp
+        normal_type = get_type_from_str(tp)
+        if normal_type != "None":
+            tp = normal_type
+
+        return tp, fields
 
     @classmethod
     def is_valid_field_name(cls, field_name) -> bool:

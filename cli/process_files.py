@@ -1,16 +1,15 @@
-import glob
-import os
-
+from .containers.get_creators import get_creators
 from .create_files import create_files
 from .logging import get_logger
-from .model_creator import ModelCreator
-from .utils import get_file_extension
-from .containers.get_creators import get_creators
 
 log = get_logger()
 
 
-def process_files(origin: str, destiny_folder: str, just_validate: bool, ignore_field_errors: bool, old_canaa_base: bool):
+def process_files(origin: str,
+                  destiny_folder: str,
+                  just_validate: bool,
+                  ignore_field_errors: bool,
+                  old_canaa_base: bool):
     success = False
     try:
         creators = get_creators(origin, ignore_field_errors, just_validate)

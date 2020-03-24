@@ -1,14 +1,14 @@
 """
 Arguments:
 
-* 
+*
 """
 import argparse
 import os
 import glob
 import sys
 
-from cli import __description__, __version__
+from cli import __description__, __version__, __tool_name__
 from cli.logging import get_logger
 from cli.help import print_help, get_help
 from cli.custom_argparse import CustomArgumentParser
@@ -78,11 +78,13 @@ class Arguments:
             if testing_args:
                 if not isinstance(testing_args, list):
                     testing_args = list(testing_args)
+                if 'testing' in testing_args:
+                    cls._TESTING_ARGS = True
+                    testing_args.remove('testing')
                 if len(testing_args) > 0:
                     sys.argv = [__file__]+testing_args
 
             get_logger().debug('Arguments: %s', sys.argv)
-            cls._TESTING_ARGS = testing_args
             parser = cls.create_parser()
             args = parser.parse_args()
 
@@ -130,42 +132,53 @@ class Arguments:
 
     @classmethod
     def create_parser(cls) -> argparse.ArgumentParser:
-        parser = CustomArgumentParser(description='{0} v{1}'.format(__description__, __version__),
-                                      usage=get_help('usage'))
-        parser.testing = cls._TESTING_ARGS is not None
+        description = '{0} v{1}'.format(__tool_name__, __version__)
+        parser = CustomArgumentParser(
+            description=__description__,
+            usage=get_help('usage'),
+            epilog=description)
+        parser.set_testing(cls._TESTING_ARGS is not None)
 
-        parser.add_argument('--source', '-s',
-                            dest='source',
-                            help='model metadata file (csv) or folder with csv files (you can use * and ? masks)',
-                            type=lambda x: source_exists(parser, x))
-        parser.add_argument('--destiny', '-d',
-                            dest='destiny',
-                            help='Path to create "model" folder and DTO, Promax and Microservice python files and JSON mocks (default = current directory)',
-                            required=(
-                                '--source' in sys.argv or '-s' in sys.argv) and not('--just-validate' in sys.argv),
-                            type=lambda x: is_valid_folder(parser, x))
-        parser.add_argument('--ignore-field-errors',
-                            dest='ignore_field_errors',
-                            action='store_true',
-                            help='Don´t stop process when detect error on field definition')
-        parser.add_argument('--just-validate',
-                            dest='just_validate',
-                            action='store_true',
-                            help='Just validate model metadata file')
-        parser.add_argument('--example', '-e',
-                            dest='example',
-                            action='store_true',
-                            help='print example of metadata file')
-        parser.add_argument('--version', '-v',
-                            dest='version',
-                            action='store_true')
-        parser.add_argument('--old-canaa',
-                            dest='old_canaa_base',
-                            action='store_true',
-                            help='Use field types for canaa_base older than 0.5.0')
-        parser.add_argument('--foo',
-                            action="store_true",
-                            help=argparse.SUPPRESS)
+        parser.add_argument(
+            '--source', '-s',
+            dest='source',
+            help='model metadata file (csv) or folder with csv files (you can use * and ? masks)',
+            type=lambda x: source_exists(parser, x))
+        parser.add_argument(
+            '--destiny', '-d',
+            dest='destiny',
+            help='Path to create "model" folder and DTO, Promax and Microservice python files and JSON mocks (default = current directory)',
+            required=(
+                '--source' in sys.argv or '-s' in sys.argv) and not('--just-validate' in sys.argv),
+            type=lambda x: is_valid_folder(parser, x))
+        parser.add_argument(
+            '--ignore-field-errors',
+            dest='ignore_field_errors',
+            action='store_true',
+            help='Don´t stop process when detect error on field definition')
+        parser.add_argument(
+            '--just-validate',
+            dest='just_validate',
+            action='store_true',
+            help='Just validate model metadata file')
+        parser.add_argument(
+            '--example', '-e',
+            dest='example',
+            action='store_true',
+            help='print example of metadata file')
+        parser.add_argument(
+            '--version', '-v',
+            dest='version',
+            action='store_true')
+        parser.add_argument(
+            '--old-canaa',
+            dest='old_canaa_base',
+            action='store_true',
+            help='Use field types for canaa_base older than 0.5.0')
+        parser.add_argument(
+            '--foo',
+            action="store_true",
+            help=argparse.SUPPRESS)
         parser.set_defaults(ignore_field_errors=False,
                             just_validate=False,
                             example=False,

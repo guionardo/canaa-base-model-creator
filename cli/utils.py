@@ -6,6 +6,8 @@ from cli import __version__
 
 
 def camel_to_snake(text: str):
+    if len(text) > 0 and text[0].islower():
+        return text
     letters = []
     last_letter = None
     for letter in text:
@@ -22,6 +24,8 @@ def camel_to_snake(text: str):
 
 
 def snake_to_camel(text: str):
+    if len(text) > 0 and text[0].isupper():
+        return text
     letters = []
     got_underline = True
     for letter in text:
@@ -39,7 +43,7 @@ def snake_to_camel(text: str):
 
 
 def get_words(line: str, nwords: int = 0, sep: str = ';'):
-    words = [word.replace('"', '').strip() for word in line.split(sep)]
+    words = [word.strip() for word in line.split(sep)]
     if nwords > 0:
         while len(words) < nwords:
             words.append(None)
@@ -58,7 +62,7 @@ def padr(string: str, size: int):
 
 
 def created_by():
-    return "# CREATED BY CANAA-BASE-MODEL-CREATOR v{0} IN {1} : {2}".format(
+    return "# CANAA-BASE-MODEL-CREATOR v{0} IN {1} : {2}".format(
         __version__,
         datetime.now(),
         getpass.getuser()

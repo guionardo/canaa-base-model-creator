@@ -1,13 +1,10 @@
-import glob
 import os
-import tempfile
 
-from openpyxl import load_workbook, worksheet
-
-from ..interfaces.metadata_container_interface import (
+from cli.interfaces.metadata_container_interface import (
     IMetadataContainer, MetadataContainerException)
-from ..model_creator import ModelCreator
-from ..utils import get_file_extension
+from cli.model_creator import ModelCreator
+from cli.utils import get_file_extension
+from openpyxl import load_workbook
 
 
 class XLSXContainer(IMetadataContainer):
@@ -21,10 +18,6 @@ class XLSXContainer(IMetadataContainer):
             if os.path.isfile(file):
                 files = [file] if get_file_extension(file) == '.xlsx' else []
 
-            elif os.path.isdir(file):
-                files = [f
-                         for f in glob.glob(os.path.join(file, '*.xlsx'))
-                         if not os.path.basename(f).startswith('~')]
             else:
                 files = []
             origins.extend(files)
@@ -32,7 +25,7 @@ class XLSXContainer(IMetadataContainer):
             self.origin = origins
         else:
             raise MetadataContainerException(
-                "No .csv files found in {0}".format(origin))
+                "No .xlsx files found in {0}".format(origin))
 
     def get_model_creators(self):
         if not self._model_creators:
@@ -44,9 +37,10 @@ class XLSXContainer(IMetadataContainer):
 
         return self._model_creators
 
-    def process_xls_file(self, file_name: str, just_validate: bool, ignore_field_errors: bool):
-        if not os.path.isfile(file_name):
-            return False
+    def process_xls_file(self,
+                         file_name: str,
+                         just_validate: bool,
+                         ignore_field_errors: bool):
 
         wb = load_workbook(filename=file_name)
         models = []
@@ -62,7 +56,12 @@ class XLSXContainer(IMetadataContainer):
 
         return models
 
-    def process_sheet(self, sheet, just_validate: bool, ignore_field_errors: bool, files_ok: list, files_error: list) -> ModelCreator:
+    def process_sheet(self,
+                      sheet,
+                      just_validate: bool,
+                      ignore_field_errors: bool,
+                      files_ok: list,
+                      files_error: list) -> ModelCreator:
         # Primeira linha - header
         (promax_ns, promax_model, ms_ns, ms_model) = (
             sheet['A1'].value,

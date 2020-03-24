@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from cli.create_ms_json import create_ms_json
-from cli.create_promax_json import create_promax_json
+from cli.create_files.create_ms_json import create_ms_json
+from cli.create_files.create_promax_json import create_promax_json
 from cli.model_creator import ModelCreator
 
 

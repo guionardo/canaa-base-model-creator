@@ -1,9 +1,8 @@
 import os
 import unittest
 
-from cli.utils import (camel_to_snake, created_by,
-                                 get_file_extension, get_words, padr,
-                                 snake_to_camel)
+from cli.utils import (camel_to_snake, created_by, get_file_extension,
+                       get_words, padr, snake_to_camel)
 
 
 class TestUtils(unittest.TestCase):
@@ -37,8 +36,8 @@ class TestUtils(unittest.TestCase):
 
     def test_created_by(self):
         cb = created_by()
-        self.assertTrue(cb[:10] == '# CREATED ')
-
+        self.assertTrue(cb.startswith('# CANAA-BASE'))
+                     
     def test_get_file_extension(self):
         fn = os.path.join("docs", "test_file.txt")
         self.assertEqual(get_file_extension(fn), '.txt')

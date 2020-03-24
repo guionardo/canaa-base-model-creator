@@ -32,7 +32,8 @@ class IMetadataContainer:
         elif os.path.isdir(origin):
             # Find csv and xlsx files
             files = [file for file in glob.glob(os.path.join(origin, '*.csv')) +
-                     glob.glob(os.path.join(origin, '*.xlsx')) if not os.path.basename(file).startswith('~')]
+                     glob.glob(os.path.join(origin, '*.xlsx'))
+                     if not os.path.basename(file).startswith('~')]
             if len(files) > 0:
                 self.origin = files
 
@@ -53,12 +54,8 @@ class IMetadataContainer:
         raise NotImplementedError
 
     @abstractmethod
-    def get_model_creators(self, ignore_field_errors: bool, just_validated: bool):
+    def get_model_creators(self):
         raise NotImplementedError
-
-
-
-
 
 
 class MetadataContainerException(Exception):

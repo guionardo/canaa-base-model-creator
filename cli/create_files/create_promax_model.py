@@ -1,9 +1,7 @@
-from datetime import datetime
-
-from .imports import Imports
-from .model_creator import ModelCreator
-from .model_field import ModelField
-from .utils import camel_to_snake, created_by, snake_to_camel
+from cli.imports import Imports
+from cli.model_creator import ModelCreator
+from cli.model_field import ModelField
+from cli.utils import camel_to_snake, created_by, snake_to_camel
 
 
 def create_promax_model(model: ModelCreator, old_canaa_base: bool):
@@ -17,7 +15,6 @@ def create_promax_model(model: ModelCreator, old_canaa_base: bool):
     linhas.append('\tdef __init__(self, arg: dict):')
     linhas.append('\t\tsuper().__init__(arg)\n')
 
-    has_datetime, has_time, has_date = False, False, False
     field: ModelField = None
     for field in model.fields:
         com = "\n\t\t# " + field.field_ms
@@ -39,7 +36,7 @@ def create_promax_model(model: ModelCreator, old_canaa_base: bool):
             )
             _imports.add('domain.models.promax.{0}.{1}'.format(
                 model.info.namespace_promax,
-                field.type_promax+"_model"),
+                camel_to_snake(field.type_promax)+"_model"),
                 snake_to_camel(field.type_promax)+"Model")
 
         linhas.append(campo)

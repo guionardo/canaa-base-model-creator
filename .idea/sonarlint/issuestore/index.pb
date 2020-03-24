@@ -1,39 +1,15 @@
 
 9
-	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 8
 setup.py,8/e/8e2edce0d507e1297474f25c00cae94258db38d8
 E
 tests/test_creator.py,4/6/46c194156b11f72c1be36d2a354c8df47daffb76
->
-canaa-model.py,5/b/5bc455499734e3e9432b4e2ea40c17a6ef607f9b
-?
-docs/model.yaml,b/1/b1c8c3fe7d27a2891b44a4ba37b92bc255cfb562
-?
-docs/model.json,f/4/f47c52a9b445e45a6009a7d3880e32a2814cbf78
 H
 tests/test_model_info.py,3/f/3fc2cebb3d1361a789f2f9f3a2d429628a1ad59a
-H
-docs/parametros-0200.csv,f/6/f6b8556e767286a11bad7a017a065021b3749432
-X
-(src/create_models/create_promax_model.py,9/8/9805b734d49461ea5a98b52548b222e5cec067ba
-O
-src/create_models/create_dto.py,f/c/fc24394366008642181a127ee07ee4b4ceb5b3dc
-O
-src/create_models/model_info.py,b/d/bd8c3a3bf34be76cdb451b7bf864fb9d77418e61
 @
 docs/ms_model.py,1/3/1348428f775287a303864e08fee07977709f6a83
-n
->domain/models/microservice/parameters/parameters_0200_model.py,b/6/b604e125761e9c6977b9432de6f0d847830e2a19
 ;
 docs/dto.py,2/4/24bde85af83789df15080965346b5f721e49f6c8
-J
-src/create_models/utils.py,f/4/f40e25f7b0fc3d988a0c0d570b8da15d43250b4d
-M
-src/create_models/__init__.py,2/4/24d47346b5e3042acb36903dee2e5824b8c2205c
-I
-docs/parametros-0200.yaml,0/8/08473c97dbbe26cbd8b591c9f7fde931570fce7f
-R
-"src/create_models/model_creator.py,9/b/9baa216267449ee2a1f9e3a392d4286712b7301e
-d
-4domain/models/dtos/parameters/parameters_0200_dto.py,a/b/abf9a476141810ac7993f989c632e2af797c4b35
+7
+Pipfile,1\5\15af4b3d30054104e85f65a444b1db188c5deefb

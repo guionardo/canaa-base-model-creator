@@ -1,25 +1,23 @@
 import glob
-import os
 
 from cli.interfaces.metadata_container_interface import (
     IMetadataContainer, MetadataContainerException)
 from cli.model_creator import ModelCreator
+from cli.utils import get_file_extension
 
 
-class FolderContainer(IMetadataContainer):
+class MaskedFilesContainer(IMetadataContainer):
 
     def validate_origin(self, origin):
-        if os.path.isdir(origin):
-            # Find csv files
-            files = glob.glob(os.path.join(origin, '*.csv'))
+        files = [file
+                 for file in glob.glob(origin)
+                 if get_file_extension(file) == '.csv']
 
-            if len(files) > 0:
-                self.origin = files
-            else:
-                raise MetadataContainerException(
-                    "No .csv files found in {0}".format(origin))
+        if len(files) > 0:
+            self.origin = files
         else:
-            raise FileNotFoundError(origin)
+            raise MetadataContainerException(
+                "No .csv files found in {0}".format(origin))
 
     def get_model_creators(self):
         if not self._model_creators:

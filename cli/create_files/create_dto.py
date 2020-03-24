@@ -1,10 +1,7 @@
-from collections import defaultdict
-from datetime import datetime
-
-from .model_creator import ModelCreator
-from .model_field import ModelField
-from .utils import snake_to_camel, created_by
-from .imports import Imports
+from cli.imports import Imports
+from cli.model_creator import ModelCreator
+from cli.model_field import ModelField
+from cli.utils import camel_to_snake, created_by, snake_to_camel
 
 
 def create_dto(model: ModelCreator, old_canaa_base: bool):
@@ -42,7 +39,7 @@ def create_dto(model: ModelCreator, old_canaa_base: bool):
             ))
             _imports.add("domain.models.dtos.{0}.{1}".format(
                 model.info.namespace_ms,
-                field.type_ms+'_dto'
+                camel_to_snake(field.type_ms)+'_dto'
             ), snake_to_camel(field.type_ms)+"DTO")
 
     _imports.add('domain.models.microservice.{0}.{1}'.format(
