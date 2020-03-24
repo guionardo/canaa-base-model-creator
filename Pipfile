@@ -14,4 +14,6 @@ rope = "*"
 [packages]
 wheel = "*"
 twine = "*"
-
+faker = "*"
+openpyxl = "*"
+bleach = "*"

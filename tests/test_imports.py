@@ -1,5 +1,6 @@
-from create_models.imports import Imports
 import unittest
+
+from cli.imports import Imports
 
 
 class TestImports(unittest.TestCase):

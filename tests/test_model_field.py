@@ -1,6 +1,6 @@
 import unittest
 
-from create_models.model_field import ModelField
+from cli.model_field import ModelField
 
 
 class TestModelField(unittest.TestCase):
@@ -12,8 +12,9 @@ class TestModelField(unittest.TestCase):
         self.assertEqual(mi.field_ms, "sales_state")
         self.assertEqual(mi.type_promax, "DescricaoModel")
         self.assertEqual(mi.type_ms, "DescriptionModel")
-        self.assertTrue(mi.pk)
+        self.assertTrue(mi.is_pk)
         self.assertTrue(mi.required)
+        self.assertIsNotNone(repr(mi))
 
     def test_model_field_error(self):
         with self.assertRaises(Exception):

@@ -35,3 +35,5 @@ cadastro;datetime;register;datetime
 taxa;float;rate;float
 descricao;DescricaoModel;description;DescriptionModel
 ```
+
+You can use Excel files, with one model per sheet.

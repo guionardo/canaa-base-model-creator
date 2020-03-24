@@ -1,8 +1,10 @@
 import os
 import unittest
 
-from create_models.create_files import create_files
-from create_models.model_creator import ModelCreator
+from cli.create_files import create_files
+from cli.containers.get_creators import get_creators
+from cli.process_files import process_files
+from cli.model_creator import ModelCreator
 
 
 class TestCreator(unittest.TestCase):
@@ -36,4 +38,8 @@ class TestCreator(unittest.TestCase):
         create_files(mc, ".")
 
         self.assertListEqual([os.path.isfile(x)
-                              for x in self.files], [True for x in self.files])
+                              for x in self.files], [True for _ in self.files])
+
+    def test_create_file_with_submodel(self):
+        origin = os.path.join('docs', 'example_with_submodel.xlsx')
+        self.assertTrue(process_files(origin, '.', False, False, False))
